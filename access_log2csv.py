@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 from pandas import DataFrame, Series
 import matplotlib.pyplot as plt
@@ -5,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from datetime import datetime
 import pytz
+
 
 def parse_str(x):
     """
@@ -15,6 +17,7 @@ def parse_str(x):
         `'my string'`
     """
     return x[1:-1]
+
 
 def parse_datetime(x):
     '''
@@ -35,8 +38,6 @@ def parse_datetime(x):
     except Exception as e:
         return e
 
-import re
-import pandas as pd
 
 data = pd.read_csv(
     'access_log',
@@ -47,17 +48,16 @@ data = pd.read_csv(
     usecols=[0, 3, 4, 5, 6, 7, 8],
     names=['ip', 'time', 'request', 'status', 'size', 'referer', 'user_agent'],
     converters={'time': parse_datetime,
-                'request': str,
+                'request': parse_str,
                 'status': str,
                 'size': str,
-                'referer': str,
-                'user_agent': str})
+                'referer': parse_str,
+                'user_agent': parse_str})
 
-pd.set_option('display.width', 10000)
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-print(data)
+# pd.set_option('display.width', 10000)
+# pd.set_option('display.max_rows', None)
+# pd.set_option('display.max_columns', None)
 
-
+data.to_csv('out.csv', index=False, quoting=1)
 
 
